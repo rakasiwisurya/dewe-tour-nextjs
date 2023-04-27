@@ -1,5 +1,5 @@
-import { db, methodValidation } from "@/helpers";
-import { queryCheckUser } from "@/models";
+import { methodValidation, serverErrorValidation } from "@/helpers";
+import { getDataUser } from "@/models";
 import { ResponseData } from "@/types";
 import bcrypt from "bcrypt";
 import Joi from "joi";
@@ -24,13 +24,13 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
       });
     }
 
-    try {
-      const user = await db.oneOrNone(queryCheckUser, [email]);
+    serverErrorValidation(res, "login", async () => {
+      const user = await getDataUser(email);
 
       if (!user) {
         return res.status(400).send({
           status: "Failed",
-          message: "Email or password doesn't correct",
+          message: "Email doesn't correct",
         });
       }
 
@@ -39,7 +39,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
       if (!isValid) {
         return res.status(400).send({
           status: "Failed",
-          message: "Email or password doesn't correct",
+          message: "Password doesn't correct",
         });
       }
 
@@ -55,12 +55,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
           token,
         },
       });
-    } catch (error) {
-      console.error(error);
-      res.status(500).send({
-        status: "Failed",
-        message: "Internal server error",
-      });
-    }
+    });
   });
 }

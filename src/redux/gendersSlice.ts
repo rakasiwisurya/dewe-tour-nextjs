@@ -12,25 +12,39 @@ export const fetchGenders = createAsyncThunk("genders", async (_, thunkAPI) => {
 const initialState: TGenderState = {
   genders: [],
   isGendersLoading: true,
+  isGenderSuccess: false,
+  isGenderFailed: false,
 };
 
 export const gendersSlice = createSlice({
   name: "genders",
   initialState,
-  reducers: {},
+  reducers: {
+    resetAllGenderStatus: (state) => {
+      state.isGendersLoading = true;
+      state.isGenderSuccess = false;
+      state.isGenderFailed = false;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchGenders.pending, (state) => {
         state.isGendersLoading = true;
+        state.isGenderSuccess = false;
+        state.isGenderFailed = false;
       })
       .addCase(fetchGenders.fulfilled, (state, action) => {
-        state.isGendersLoading = false;
         state.genders = action.payload.data;
+        state.isGendersLoading = false;
+        state.isGenderSuccess = true;
       })
       .addCase(fetchGenders.rejected, (state) => {
         state.isGendersLoading = false;
+        state.isGenderFailed = true;
       });
   },
 });
+
+export const { resetAllGenderStatus } = gendersSlice.actions;
 
 export default gendersSlice.reducer;

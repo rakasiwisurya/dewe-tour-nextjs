@@ -4,7 +4,12 @@ import Image from "next/image";
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { Button, Form, Modal, ModalProps, Placeholder, Spinner } from "react-bootstrap";
 
-const ModalRegister = ({ onHide, onSwitch, ...rest }: ModalProps & { onSwitch: () => void }) => {
+const ModalRegister = ({
+  onHide,
+  onSwitch,
+  isVisible,
+  ...rest
+}: ModalProps & { onSwitch: () => void }) => {
   const [form, setForm] = useState({
     fullname: "",
     email: "",
@@ -43,11 +48,18 @@ const ModalRegister = ({ onHide, onSwitch, ...rest }: ModalProps & { onSwitch: (
   return (
     <Modal {...rest} onHide={onHide} centered>
       <div>
-        <Image src={ICPalm} alt="ICPalm" className="position-absolute top-0 start-0" priority />
+        <Image
+          src={ICPalm}
+          alt="ICPalm"
+          className="position-absolute top-0 start-0"
+          style={{ borderTopLeftRadius: "0.5rem" }}
+          priority
+        />
         <Image
           src={ICHibiscus}
           alt="ICHibiscus"
           className="position-absolute top-0 end-0"
+          style={{ borderTopRightRadius: "0.5rem" }}
           priority
         />
       </div>
@@ -81,10 +93,14 @@ const ModalRegister = ({ onHide, onSwitch, ...rest }: ModalProps & { onSwitch: (
             <Form.Control type="tel" value={form.phone} onChange={handleChangeInput} required />
           </Form.Group>
 
-          <Form.Group className="mb-4" controlId="gender_id">
+          <Form.Group className="mb-3" controlId="gender_id">
             <Form.Label className="fw-bold fs-5">Gender</Form.Label>
             {isGendersLoading ? (
-              <Placeholder as={Form.Select} animation="glow" />
+              <div>
+                <Placeholder animation="glow">
+                  <Placeholder xs={12} style={{ height: 37, borderRadius: "0.375rem" }} />
+                </Placeholder>
+              </div>
             ) : (
               <Form.Select
                 value={form.gender_id}
@@ -97,13 +113,11 @@ const ModalRegister = ({ onHide, onSwitch, ...rest }: ModalProps & { onSwitch: (
                     {gender.gender_name}
                   </option>
                 ))}
-                {/* <option value="MALE">Male</option>
-              <option value="FEMALE">Female</option> */}
               </Form.Select>
             )}
           </Form.Group>
 
-          <Form.Group className="mb-3" controlId="address">
+          <Form.Group className="mb-4" controlId="address">
             <Form.Label className="fw-bold fs-5">Address</Form.Label>
             <Form.Control
               as="textarea"
@@ -129,7 +143,7 @@ const ModalRegister = ({ onHide, onSwitch, ...rest }: ModalProps & { onSwitch: (
           <div className="text-muted text-center">
             Already have an account?{" "}
             <span role="button" className="fw-bold" onClick={onSwitch}>
-              Klik Here
+              Click Here
             </span>
           </div>
         </Form>

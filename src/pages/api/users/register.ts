@@ -1,5 +1,5 @@
-import { db, methodValidation } from "@/helpers";
-import { queryCheckUser, queryInsertUser } from "@/models";
+import { db, methodValidation, serverErrorValidation } from "@/helpers";
+import { getDataUser, saveDataUser } from "@/models";
 import { ResponseData } from "@/types";
 import bcrypt from "bcrypt";
 import Joi from "joi";
@@ -27,8 +27,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
       });
     }
 
-    try {
-      const user = await db.oneOrNone(queryCheckUser, [email]);
+    serverErrorValidation(res, "register", async () => {
+      const user = await getDataUser(email);
 
       if (user) {
         return res.status(400).send({
@@ -40,26 +40,13 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
 
-      const data = await db.one(queryInsertUser, [
-        fullname,
-        email,
-        hashedPassword,
-        phone,
-        gender_id,
-        address,
-        "user",
-      ]);
+      const data = await saveDataUser(fullname, email, hashedPassword, phone, gender_id, address);
 
       res.status(201).send({
         status: "Success",
         message: "Success register",
         data,
       });
-    } catch (error) {
-      res.status(500).send({
-        status: "Failed",
-        message: "Internal server error",
-      });
-    }
+    });
   });
 }

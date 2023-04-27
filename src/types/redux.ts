@@ -7,7 +7,12 @@ export type TUserState = {
     gender?: string;
   } | null;
   isRegisterLoading: boolean;
+  isRegisterSuccess: boolean;
+  isRegisterFailed: boolean;
+
   isLoginLoading: boolean;
+  isLoginSuccess: boolean;
+  isLoginFailed: boolean;
 };
 
 export type TGenderState = {
@@ -16,4 +21,6 @@ export type TGenderState = {
     gender_name?: string;
   }>;
   isGendersLoading: boolean;
+  isGenderSuccess: boolean;
+  isGenderFailed: boolean;
 };
